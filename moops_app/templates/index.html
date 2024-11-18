@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    {% load static %}
+
+    <title>Moops Shoping Destination</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+      integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" href="{% static 'images/fav_icon.png' %}" type="image/png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+
+  </head>
+  <style>
+      .slick-slide {
+            position: relative;
+        }
+        .slick-slide img {
+            border-radius: 50%;
+            max-height: 200px;
+            margin: auto;
+        }
+        .slick-slide .caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: black;
+            padding: 5px;
+            font-size: 14px;
+        }
+        .slick-prev, .slick-next {
+            font-size: 0;
+            line-height: 0;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+            width: 40px;
+            height: 40px;
+            padding: 10px;
+            background-color: #0c3536;
+            border-radius: 50%;
+            color: white;
+            transition: opacity 0.3s ease;
+        }
+        .slick-prev:hover, .slick-next:hover {
+            opacity: 0.7;
+        }
+        .slick-prev {
+            left: 10px;
+        }
+        .slick-next {
+            right: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .slick-slide img {
+                max-height: 150px;
+            }
+        }
+        @media (max-width: 576px) {
+            .slick-slide img {
+                max-height: 100px;
+            }
+            .slick-prev, .slick-next {
+                width: 30px;
+                height: 30px;
+                padding: 7px;
+            }
+        }
+        a{
+            text-decoration: none;
+        }
+        .jumbotron {
+        position: relative;
+        padding-top: 150px;
+        padding-bottom: 150px;
+        margin-bottom: 0;
+        background: transparent;
+        color: white;
+        overflow: hidden;
+    }
+
+    .jumbotron:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('{{ jumbotron.background_image.url }}');
+        background-size: cover;
+        background-position: center; /* Centers the image */
+        background-repeat: no-repeat;
+        z-index: -1;
+        transform: translateZ(-1px) scale(1.5);
+    }
+
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    /* Adjust for smaller screens */
+    @media (max-width: 991px) {
+        .jumbotron {
+            padding-top: 100px;
+            padding-bottom: 100px;
+        }
+        .jumbotron:before {
+            background-size: contain; /* Ensures the image is not stretched on smaller screens */
+        }
+    }
+
+    @media (max-width: 576px) {
+        .jumbotron {
+            padding-top: 80px;
+            padding-bottom: 80px;
+        }
+        .jumbotron:before {
+            background-size: contain;
+        }
+    }
+        .cart-quantity-badge {
+    position: absolute;
+    top: -20px;
+    right: 5px;
+    background-color: #D91212;
+    color: white;
+    border-radius: 90%;
+    padding: 5px;
+    font-size: 6.8px;
+}
+.whatsapp-float {
+        position: fixed;
+        width: 60px;
+        height: 60px;
+        bottom: 20px;
+        right: 20px;
+        background-color: #25d366;
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        font-size: 30px;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.3s, background-color 0.3s;
+    }
+
+    .whatsapp-float:hover {
+        background-color: #1ebe53;
+        transform: scale(1.1);
+    }
+
+    .whatsapp-float i {
+        font-size: 30px;
+        color: white;
+    }
+  </style>
+  <body>
+    <!-- <div class="scroll-container"></div> -->
+    <!-- header start -->
+
+    <header class="header" style="background-color: #f5f5dc; ">
+        <div class="containers">
+          <div class="rows v-center">
+            <div class="header-item item-left">
+              <div class="logo">
+                <a href="/">
+                  <img src="{% static 'images/logo.png' %}" alt="">
+                </a>
+              </div>
+            </div>
+            <!-- menu start here -->
+            <div class="header-item item-center">
+              <div class="menu-overlay"></div>
+              <nav class="menu">
+                <div class="mobile-menu-head">
+                  <div class="go-back"><i class="fa fa-angle-left"></i></div>
+                  <div class="current-menu-title"></div>
+                  <div class="mobile-menu-close">&times;</div>
+                </div>
+                <ul class="menu-main" style="padding-left: 0px;">
+                  <li>
+                    <a href="/" style="text-decoration: none;">Home</a>
+                  </li>
+                  <li class="menu-item-has-children">
+                    <a href="#"style="text-decoration: none;">New <i class="fa fa-angle-down"></i></a>
+    <div class="sub-menu mega-menu mega-menu-column-4">
+      <!-- Loop through the product types -->
+      {% for product_type in product_types %}
+      <div class="list-item text-center">
+          <!-- Link to the specific product type page -->
+          <a href="{% url 'product_type_page' product_type.id %}" style="text-decoration: none;">
+              <!-- Display the product type image -->
+              <img src="{{ product_type.image.url }}" alt="{{ product_type.name }}"  />
+              <!-- Display the product type name as heading -->
+              <h4 class="title">{{ product_type.name }}</h4>
+          </a>
+      </div>
+      {% endfor %}
+    </div>
+    
+                  </li>
+                  <li class="menu-item-has-children">
+                    <a href="#" style="text-decoration: none;">Shop <i class="fa fa-angle-down"></i></a>
+                    <div class="sub-menu mega-menu mega-menu-column-4">
+                        {% for product_type in product_types %}
+                        <div class="list-item">
+                            <h4 class="title">{{ product_type.name }}</h4>
+                            <ul>
+                                {% for category in categories %}
+                                {% if category.product_type == product_type %}
+                                <li><a href="{% url 'category_view' category.id %}" style="text-decoration: none;">{{ category.name }}</a></li>
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endfor %}
+                        <!-- <div class="list-item">
+                            <img src="https://images.unsplash.com/photo-1549497538-303791108f95?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=761&q=80" alt="Chair" />
+                        </div> -->
+                    </div>
+                </li>
+                <li>
+                  <a href="{% url 'contact_page' %}" style="text-decoration: none;">About Us</a>
+                </li>
+    
+                  <li>
+                    <a href="{% url 'contact_page' %}" style="text-decoration: none;">Contact</a>
+                  </li>
+                  <li class="menu-item-has-children">
+                      <a href="#" style="text-decoration: none;"><i class="fa-solid fa-user"></i> <i class="fas fa-angle-down"></i></a>
+                      <div class="sub-menu single-column-menu">
+                        <ul>
+                          <li><a href="{% url 'logout' %}" style="text-decoration: none;">Logout</a></li>
+                          <li><a href="{% url 'signup_page' %}" style="text-decoration: none;">Register</a></li>
+                          <li><a href="{% url 'user_orders' %}" style="text-decoration: none;">Order</a></li>
+                          <li><a href="{% url 'user_customize_orders' %}" style="text-decoration: none;">Customized Order</a></li>
+                          
+                        </ul>
+                      </div>
+                    </li>
+                </ul>
+              </nav>
+            </div>
+            <!-- menu end here -->
+            <div class="header-item item-right">
+              <a href="{% url 'wishlist' %}" style="text-decoration: none;"><i class="far fa-heart"></i></a>
+              <a href="{% url 'cart_page' %}" style="text-decoration: none;">
+                  <i class="fas fa-shopping-cart"></i>
+                  <span class="cart-quantity-badge">{% if cart_quantity is not None %}{{ cart_quantity }}{% else %}0{% endif %}</span>
+              </a>
+              <!-- mobile menu trigger -->
+              <div class="mobile-menu-trigger">
+                <span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+<!-- WhatsApp Floating Button -->
+<a href="https://wa.me/+919955809933" target="_blank" class="whatsapp-float" aria-label="Chat on WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+</a>
+
+
+    <div class="container-fluid desktop-owl-carousel" style="margin-top: 90px;">
+        <div class="owl-carousel owl-theme" id="desktop-owl-carousel">
+            <!-- Loop through the Owl Carousel slides -->
+            {% for slide in slides %}
+            <div class="item slide-sections">
+                <div class="slide-content">
+                    <!-- Display the slide image -->
+                    {% if slide.image %}
+                    <img src="{{ slide.image.url }}" alt="Owl Slide" style="border-radius: 10px;"> <!-- Display existing image -->
+                    {% else %}
+                    <p>No image</p> <!-- Display fallback text if there's no image -->
+                    {% endif %}
+                    
+                    <!-- Centered content with button -->
+                    <div class="centered-content">
+                        <a href="{{ slide.button_url }}" target="_blank" class="btn mt-5" style="background-color: #0c3536; color: #fff; border-radius: 0;">
+                            {{ slide.button_text }} <!-- Display button text -->
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="container-fluid mobile-owl-carousel" style="margin-top: 120px;">
+        <div class="owl-carousel owl-theme" id="mobile-owl-carousel">
+            {% for slide in mobile_slides %}
+            <div class="item slide-sections">
+                <div class="slide-content">
+                    {% if slide.image %}
+                    <img src="{{ slide.image.url }}" alt="Mobile Owl Slide" style="border-radius: 10px;">
+                    {% else %}
+                    <p>No image</p>
+                    {% endif %}
+                    
+                    <!-- Centered content with button -->
+                    <div class="centered-content">
+                        <a href="{{ slide.button_url }}" target="_blank" class="btn mt-5" style="background-color: #0c3536; color: #fff; border-radius: 0;">
+                            {{ slide.button_text }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="fixed-buttons">
+        <button> Offers</button>
+        <button><i class="fas fa-gift"></i></button>
+    </div>
+<div class="container mt-5">
+  <h3 class="text-center"> Special for You &#10084;</h3>
+</div>
+
+    <div class="product-card-container mt-5">
+        <!-- Product Card 1 -->
+        {% for product in products %}
+      <div class="product-card">
+          <a href="{% url 'product_detail' product.slug %}">
+              {% if product.images.first %}
+                  <img class="product-image" src="{{ product.images.first.image.url }}" alt="{{ product.heading }}">
+              {% else %}
+                  <img class="product-image" src="http://via.placeholder.com/400x400" alt="Product Image">
+              {% endif %}
+              <div class="product-title">{{ product.heading }}</div>
+          </a>
+          <div class="average-rating text-center" style="color: #FFD700;">
+            {% for _ in product.stars_representation.full_stars %}
+                <i class="fas fa-star"></i>
+            {% endfor %}
+            {% if product.stars_representation.half_star %}
+                <i class="fas fa-star-half-alt"></i>
+            {% endif %}
+            {% for _ in product.stars_representation.empty_stars %}
+                <i class="far fa-star"></i>
+            {% endfor %}
+            ({{ product.reviews.count }} Reviews)
+        </div>
+          <div class="product-price">
+              <span class="original-price">₹{{ product.original_price }}</span>
+              {% if product.discount_price %}
+                  <span class="discount-price">₹{{ product.discount_price }}</span>
+              {% endif %}
+          </div>
+          <form method="POST" action="{% url 'add_to_cart' pk=product.id %}">
+            {% csrf_token %}
+            <button type="submit"  class="product-button">Buy Now</button>
+          </form>
+          
+      </div>
+  {% endfor %}
+        <!-- Add more product cards here -->
+      
+      </div>
+      <div class="container mt-5 text-center">
+        <a href="#" class="buttons outline">View More</a>
+    </div>
+
+<div class="container mt-5">
+  <h4 class="text-center">Choose By Ingredients</h4>
+</div>
+
+    <div class="container mt-5">
+      <div class="carousel">
+        <!-- Loop through the ingredients to create carousel items -->
+        {% for p in ingredient %}
+        <div>
+            <!-- Link to the specific ingredient detail page -->
+            <a href="{% url 'ingredient_detail' p.id %}" style="color: #fff;">
+                <!-- Display the ingredient image -->
+                <!-- Check if 'image' field has content -->
+                {% if p.image %}
+                 <img src="{{ p.image.url }}" alt="{{ ingredient.name }}">  <!-- Display the image -->
+                {% else %}
+                <p>No image</p>  <!-- Display fallback text if there's no image -->
+                 {% endif %}
+
+                <!-- Display the ingredient name as a caption -->
+                <div class="caption">{{ p.name }}</div>
+
+                <!-- Additional heading if needed -->
+                <h4 style="color: white;">{{ p.name }}</h4>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+  </div>
+  <div class="jumbotron jumbotron-fluid mt-5 mb-5">
+    <div class="overlay"></div> <!-- Overlay to darken the background image -->
+    <div class="container jumbotron-content">
+        <h1 class="display-4">{{ jumbotron.title }}</h1>
+        <p class="lead">{{ jumbotron.text }}</p>
+    </div>
+</div> 
+
+
+<div class="carousel-container mt-5 mb-5">
+  <div class="carousel-content">
+      <div class="carousel-heading">
+          <h2>Shop By Collections</h2>
+          <div class="carousel-controls">
+              <button class="prev-btn"><i class="fas fa-chevron-left"></i></button>
+              <button class="next-btn"><i class="fas fa-chevron-right"></i></button>
+          </div>
+      </div>
+  </div>
+  <div class="owl-carousel slider owl-theme category-section">
+      <!-- Loop through product types to create slides -->
+      {% for product in product_types %}
+      <div class="item">
+          <!-- Wrap the image and heading in a link to the specific product type -->
+          <a href="{% url 'product_type_page' product.id %}" style="text-decoration: none; color: #0c3536;" >
+              <img src="{{ product.image.url }}" alt="{{ product.name }}">
+              <h4 class="text-center mt-3">{{ product.name }}</h4>
+          </a>
+      </div>
+      {% endfor %}
+  </div>
+</div>
+
+<div class="container">
+  <h2 class="text-center">New Arrivals</h2>
+</div>
+<div class="container mt-3 text-center">
+  <a href="{% url 'all_products' %}" class="buttons outline">View More</a>
+</div>
+<div class="product-card-container mt-5">
+  <!-- Loop through the products to display each product card -->
+  {% for product in regular_products  %}
+      <div class="product-card">
+          <a href="{% url 'product_detail' product.slug %}">
+              {% if product.images.first %}
+                  <img class="product-image" src="{{ product.images.first.image.url }}" alt="{{ product.heading }}">
+              {% else %}
+                  <img class="product-image" src="http://via.placeholder.com/400x400" alt="Product Image">
+              {% endif %}
+              <div class="product-title">{{ product.heading }}</div>
+          </a>
+          <div class="average-rating text-center" style="color: #FFD700;">
+            {% for _ in product.stars_representation.full_stars %}
+                <i class="fas fa-star"></i>
+            {% endfor %}
+            {% if product.stars_representation.half_star %}
+                <i class="fas fa-star-half-alt"></i>
+            {% endif %}
+            {% for _ in product.stars_representation.empty_stars %}
+                <i class="far fa-star"></i>
+            {% endfor %}
+            ({{ product.reviews.count }} Reviews)
+        </div>
+          <div class="product-price">
+              <span class="original-price">₹{{ product.original_price }}</span>
+              {% if product.discount_price %}
+                  <span class="discount-price">₹{{ product.discount_price }}</span>
+              {% endif %}
+          </div>
+          <form method="POST" action="{% url 'add_to_cart' pk=product.id %}">
+            {% csrf_token %}
+            <button type="submit"  class="product-button">Buy Now</button>
+          </form>
+          
+      </div>
+  {% endfor %}
+</div>
+<!-- Hero Section -->
+<section class="hero-section" style="background-image: url('{{ hero.background_image.url }}');">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="hero-content">
+                    <h1 class="hero-heading">{{ hero.heading }}</h1>
+                    <p class="hero-paragraph">{{ hero.paragraph }}</p>
+        <a href="{% url 'add_customized_product' %}" class="hero-button">Create Yours</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div class="container mt-5">
+    <div class="row">
+        {% for video in videos %}
+        <div class="col-md-3 pt-5">
+            <a href="{% url 'product_detail' video.product.slug %}">
+                <div class="card" style="cursor: pointer;">
+                    <div class="video-container">
+                        <video class="card-video" autoplay loop muted>
+                            <source src="{{ video.video_file.url }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ video.product.heading }}</h5>
+                        <p class="card-text">Price: ₹{{ video.product.discount_price }}</p>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+        {% empty %}
+        <p>No videos available.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="container mt-5">
+  <h4 class="text-center">Shop By Concern</h4>
+</div>
+
+    <div class="container mt-5">
+      <div class="carousel">
+        <!-- Loop through the ingredients to create carousel items -->
+        {% for p in concerns %}
+        <div>
+            <!-- Link to the specific ingredient detail page -->
+            <a href="{% url 'concern_detail' p.id %}" style="color: #fff;">
+                <!-- Display the ingredient image -->
+                {% if p.image %}
+                <img src="{{ p.image.url }}" alt="{{ p.name }}">  <!-- Display the image with 'alt' text -->
+                   {% else %}
+                 <p>No image</p>  <!-- Display fallback text -->
+                      {% endif %}
+
+                <!-- Display the ingredient name as a caption -->
+                <div class="caption">{{ p.name }}</div>
+
+                <!-- Additional heading if needed -->
+                <h4 style="color: white;">{{ p.name }}</h4>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+  </div>
+  <div class="container-fluid mt-5" style="padding: 50px; background-color: aliceblue;">
+    <div class="Heading">
+        <h2 class="text-center">Blogs</h2>
+    </div>
+    <div class="container mt-5">
+        <div class="row">
+            {% for blog in blogs %}
+            <div class="col-md-4">
+                <div class="blog-card">
+                    {% if blog.image %}
+    <img src="{{ blog.image.url }}" class="card-img-top" alt="{{ blog.title }}">  <!-- Display the blog image -->
+{% else %}
+    <!-- Display a default placeholder image -->
+    <img src="https://via.placeholder.com/300x300" class="card-img-top" alt="No image available">  <!-- Placeholder image -->
+{% endif %}
+                    <div class="card-body" style="background-color: #fff;">
+                        <h5 class="card-title">{{ blog.title }}</h5>
+                        <p class="card-text">{{ blog.content|safe|truncatewords:3 }}</p>
+                        <a href="{% url 'blog_detail' slug=blog.slug %}" class="read-more-link">Read More <i class="fas fa-arrow-right"></i></a>
+                        <p class="card-text"><small class="text-muted">By {{ blog.author }} | Published on {{ blog.pub_date|date:"d F Y" }}</small></p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}    
+        </div>
+        
+    </div>
+</div>
+<div class="carousel-container mt-5 mb-5">
+  <div class="carousel-content">
+      <div class="carousel-heading">
+          <h2 class="text-center">Find us Upon</h2>
+      </div>
+  </div>
+  <div class="owl-carousel owl-theme client-logo-carousel">
+    <!-- Loop through the client logos -->
+    {% for logo in logos %}
+    <div class="item">
+        {% if logo.image %}
+        <img src="{{ logo.image.url }}" alt="{{ logo.alt_text }}" style="width: 100px; height: 100px;">  <!-- Display image -->
+    {% else %}
+        <p>No image</p>  <!-- Display fallback text when there's no image -->
+    {% endif %}    </div>
+    {% endfor %}
+</div>
+</div>
+<!-- Footer -->
+<footer class="footer-section">
+  <div class="container">
+      <div class="row">
+          <!-- Our Shop Links -->
+          <div class="col-md-3 col-sm-6 footer-col">
+              <h5 class="text-center">Our Shop</h5>
+              <ul class="footer-links mt-3">
+                {% for product_type in product_types %}
+                  <li><a href="{% url 'product_type_page' product_type.id %}">{{ product_type.name }}</a></li>
+                  
+                  {% endfor %}
+              </ul>
+          </div>
+          
+          <!-- Quick Links -->
+          <div class="col-md-3 col-sm-6 footer-col">
+              <h5 class="text-center">Quick Links</h5>
+              <ul class="footer-links mt-3">
+                  <li><a href="/">Home</a></li>
+                  <li><a href="#">About Us</a></li>
+                  <li><a href="{% url 'contact_page' %}">Contact Us</a></li>
+              </ul>
+          </div>
+          
+          <!-- Help -->
+          <div class="col-md-3 col-sm-6 footer-col">
+              <h5 class="text-center">Help</h5>
+              <ul class="footer-links mt-3">
+                  <li><a href="{% url 'contact_page' %}">Contact Us</a></li>
+                  <li><a href="#">Terms And Conditions</a></li>
+              </ul>
+          </div>
+          
+          <!-- Subscribe Section -->
+          <div class="col-md-3 col-sm-6 footer-col">
+              <h5 class="text-center">Follow Us</h5>
+              
+              <div class="social-links mt-3">
+                  <a href="https://www.instagram.com/moops_hand_made_store/" target="_blank"><i class="fab fa-instagram"></i></a>
+                  <a href="https://www.facebook.com/people/Moops-Hand-Made-Store/61557992012249/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                  <a href="https://www.youtube.com/@MoopsHandMadeStore" target="_blank"><i class="fab fa-youtube"></i></a>
+                  <a href="https://wa.me/+919955809933" target="_blank"><i class="fab fa-whatsapp"></i></a>
+              </div>
+          </div>
+      </div>
+      
+      <!-- Copyrights -->
+      <div class="row mt-4">
+          <div class="col-12 text-center">
+              <p>&copy; 2024 All Rights Reserved</p>
+          </div>
+      </div>
+  </div>
+</footer>
+
+    <script src="{% static 'javascript/script.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+<script>
+var swiper = new Swiper(".mySwiper", {
+      spaceBetween: 30,
+      effect: "fade",
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+      autoplay: {
+        delay: 10000, // Adjust the delay in milliseconds between slides
+        disableOnInteraction: false, // Continue autoplay even when the user interacts with the slider
+    },
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+      },
+    });
+
+
+    var swiper = new Swiper(".mySwiperMobile", {
+      spaceBetween: 30,
+      effect: "fade",
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev",
+      },
+      autoplay: {
+        delay: 10000, // Adjust the delay in milliseconds between slides
+        disableOnInteraction: false, // Continue autoplay even when the user interacts with the slider
+    },
+      pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+      },
+    });
+    
+    
+    $(document).ready(function(){
+        $('.carousel').slick({
+            slidesToShow: 4,
+            slidesToScroll: 1,
+            prevArrow: '<button type="button" class="slick-prev"><span class="carousel-control-prevs-icon" aria-hidden="true"></span></button>',
+            nextArrow: '<button type="button" class="slick-next"><span class="carousel-control-nexts-icon" aria-hidden="true"></span></button>',
+            autoplay: true,
+            autoplaySpeed: 2000, // Adjust speed in milliseconds
+            responsive: [
+                {
+                    breakpoint: 768,
+                    settings: {
+                        slidesToShow: 2
+                    }
+                },
+                {
+                    breakpoint: 576,
+                    settings: {
+                        slidesToShow: 2
+                    }
+                }
+            ]
+        });
+    });
+
+
+
+
+    $(document).ready(function(){
+    $('.category-section').owlCarousel({
+        loop: true,
+        margin: 10,
+        nav: false,  // Default navigation is turned off
+        responsive: {  // Responsive settings
+            0: {  // For smaller screens
+                items: 1,
+                dots: true,  // Enable pagination/dots for mobile view
+            },
+            768: {  // For tablet and larger screens
+                items: 2,
+                dots: false,  // Disable pagination/dots for larger screens
+            },
+            900: {  // For desktop screens
+                items: 3,
+                dots: false,
+            },
+        },
+        onInitialized: function() {  // Custom navigation triggers
+            // Custom previous button trigger
+            $('.prev-btn').on('click', function() {
+                $('.category-section').trigger('prev.owl.carousel');
+            });
+
+            // Custom next button trigger
+            $('.next-btn').on('click', function() {
+                $('.category-section').trigger('next.owl.carousel');
+            });
+        }
+    });
+});
+
+
+
+  $('.client-logo-carousel').owlCarousel({
+        loop: true,
+        margin: 10,
+        nav: false,
+        autoplay: true,
+        autoplayTimeout: 2000,
+        autoplayHoverPause: true,
+        responsive:{
+            0:{
+                items:1
+            },
+            400:{
+                items:3
+            },
+            300:{
+                items:3
+            },
+            1000:{
+                items:5
+            }
+        }
+    });
+
+
+    $(document).ready(function() {
+    $('#desktop-owl-carousel').owlCarousel({
+        loop: true,               // Infinite loop
+        margin: 10,               // Margin between slides
+        nav: true,                // Show next/prev buttons
+        autoplay: true,           // Enable autoplay
+        autoplayTimeout: 3000,    // Set autoplay interval
+        autoplayHoverPause: true, // Pause on hover
+        responsive: {
+            0: {
+                items: 1          // Number of items on small screens
+            },
+            600: {
+                items: 1          // Number of items on medium screens
+            },
+            1000: {
+                items: 1          // Number of items on large screens
+            }
+        },
+        navText: ["<i class='fas fa-chevron-left'></i>", "<i class='fas fa-chevron-right'></i>"]
+    });
+});
+
+$(document).ready(function() {
+    $('#mobile-owl-carousel').owlCarousel({
+        loop: true,               // Infinite loop
+        margin: 10,               // Margin between slides
+        nav: false,                // Show next/prev buttons
+        autoplay: true,           // Enable autoplay
+        autoplayTimeout: 3000,    // Set autoplay interval
+        autoplayHoverPause: true, // Pause on hover
+        dots:false,
+        responsive: {
+            0: {
+                items: 1          // Show 1 item on small screens
+            },
+            600: {
+                items: 1          // Show 1 item on medium screens
+            },
+            1000: {
+                items: 1          // Show 1 item on large screens
+            }
+        },
+        navText: ["<i class='fas fa-chevron-left'></i>", "<i class='fas fa-chevron-right'></i>"]
+    });
+});
+</script>
+  </body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/cart.css' %}">
+    <link rel="icon" href="{% static 'images/fav_icon.png' %}" type="image/png">
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+</head>
+<body>
+ 
+    <!-- <div class="scroll-container"></div> -->
+    <!-- header start -->
+
+    <header class="header" style="background-color: #f5f5dc; ">
+      <div class="containers">
+        <div class="rows v-center">
+          <div class="header-item item-left">
+            <div class="logo">
+              <a href="/">
+                <img src="{% static 'images/logo.png' %}" alt="">
+              </a>
+            </div>
+          </div>
+          <!-- menu start here -->
+          <div class="header-item item-center">
+            <div class="menu-overlay"></div>
+            <nav class="menu">
+              <div class="mobile-menu-head">
+                <div class="go-back"><i class="fa fa-angle-left"></i></div>
+                <div class="current-menu-title"></div>
+                <div class="mobile-menu-close">&times;</div>
+              </div>
+              <ul class="menu-main" style="padding-left: 0px;">
+                <li>
+                  <a href="/" style="text-decoration: none;">Home</a>
+                </li>
+                <li class="menu-item-has-children">
+                  <a href="#"style="text-decoration: none;">New <i class="fa fa-angle-down"></i></a>
+  <div class="sub-menu mega-menu mega-menu-column-4">
+    <!-- Loop through the product types -->
+    {% for product_type in product_types %}
+    <div class="list-item text-center">
+        <!-- Link to the specific product type page -->
+        <a href="{% url 'product_type_page' product_type.id %}" style="text-decoration: none;">
+            <!-- Display the product type image -->
+            <img src="{{ product_type.image.url }}" alt="{{ product_type.name }}"  />
+            <!-- Display the product type name as heading -->
+            <h4 class="title">{{ product_type.name }}</h4>
+        </a>
+    </div>
+    {% endfor %}
+  </div>
+  
+                </li>
+                <li class="menu-item-has-children">
+                  <a href="#" style="text-decoration: none;">Shop <i class="fa fa-angle-down"></i></a>
+                  <div class="sub-menu mega-menu mega-menu-column-4">
+                      {% for product_type in product_types %}
+                      <div class="list-item">
+                          <h4 class="title">{{ product_type.name }}</h4>
+                          <ul>
+                              {% for category in categories %}
+                              {% if category.product_type == product_type %}
+                              <li><a href="{% url 'category_view' category.id %}" style="text-decoration: none;">{{ category.name }}</a></li>
+                              {% endif %}
+                              {% endfor %}
+                          </ul>
+                      </div>
+                      {% endfor %}
+                      <!-- <div class="list-item">
+                          <img src="https://images.unsplash.com/photo-1549497538-303791108f95?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=761&q=80" alt="Chair" />
+                      </div> -->
+                  </div>
+              </li>
+              <li>
+                <a href="{% url 'contact_page' %}" style="text-decoration: none;">About Us</a>
+              </li>
+  
+                <li>
+                  <a href="{% url 'contact_page' %}" style="text-decoration: none;">Contact</a>
+                </li>
+                <li class="menu-item-has-children">
+                    <a href="#" style="text-decoration: none;"><i class="fa-solid fa-user"></i> <i class="fas fa-angle-down"></i></a>
+                    <div class="sub-menu single-column-menu">
+                      <ul>
+                        <li><a href="{% url 'logout' %}" style="text-decoration: none;">Logout</a></li>
+                        <li><a href="{% url 'signup_page' %}" style="text-decoration: none;">Register</a></li>
+                        <li><a href="{% url 'user_orders' %}" style="text-decoration: none;">Order</a></li>
+                        <li><a href="{% url 'user_customize_orders' %}" style="text-decoration: none;">Customized Order</a></li>
+                        
+                      </ul>
+                    </div>
+                  </li>
+              </ul>
+            </nav>
+          </div>
+          <!-- menu end here -->
+          <div class="header-item item-right">
+            <a href="{% url 'wishlist' %}" style="text-decoration: none;"><i class="far fa-heart"></i></a>
+            <a href="{% url 'cart_page' %}" style="text-decoration: none;">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-quantity-badge">{% if cart_quantity is not None %}{{ cart_quantity }}{% else %}0{% endif %}</span>
+            </a>
+            <!-- mobile menu trigger -->
+            <div class="mobile-menu-trigger">
+              <span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+
+
+    <div class="container-fluid" style="margin-top: 120px;">
+      <h2>Your Cart</h2>
+      <div class="row">
+          <div class="col-lg-8">
+              {% for cart in carts %}
+              <div class="cart-item">
+                  <div class="row">
+                      <div class="col-md-3 col-sm-4">
+                          {% if cart.product.images.all %}
+                          <img src="{{ cart.product.images.all.0.image.url }}" alt="{{ cart.product.heading }}" class="product-image img-fluid">
+                          {% else %}
+                          <img src="https://via.placeholder.com/150" alt="No image available" class="product-image img-fluid">
+                          {% endif %}
+                      </div>
+                      <div class="col-md-5 col-sm-6 product-details">
+                          <h5 class="product-title">{{ cart.product.heading }}</h5>
+                          <span class="subtotal" style="color: #01030d;" data-price="{{ cart.product.discount_price }}">₹{{ cart.subtotal }}</span>
+                      </div>
+                      <div class="col-md-4 col-sm-2">
+                          <div class="input-group mb-3 mt-3">
+                              <input type="number" name="quantity" value="{{ cart.quantity }}" class="form-control quantity-input" data-cart-id="{{ cart.id }}" min="1">
+                          </div>
+                          <div class="mt-2">
+                              <a class="btn-remove btn" href="{% url 'remove_from_cart' cart.id %}">Remove</a>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              {% empty %}
+              <p>Your cart is empty.</p>
+              {% endfor %}
+          </div>
+          <div class="col-lg-4">
+              <div class="card">
+                  <div class="card-body">
+                      <h5 class="card-title">Order Summary</h5>
+                      <p>Total: <span id="total-price" class="float-right">₹{{ total_price }}</span></p>
+                      <a class="btn btn-block" href="{% url 'checkout_page' %}" style="background-color: #0c3536; color: #fff;">Checkout</a>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  
+  <footer class="footer-section">
+    <div class="container">
+        <div class="row">
+            <!-- Our Shop Links -->
+            <div class="col-md-3 col-sm-6 footer-col">
+                <h5 class="text-center">Our Shop</h5>
+                <ul class="footer-links mt-3">
+                  {% for product_type in product_types %}
+                    <li><a href="{% url 'product_type_page' product_type.id %}">{{ product_type.name }}</a></li>
+                    
+                    {% endfor %}
+                </ul>
+            </div>
+            
+            <!-- Quick Links -->
+            <div class="col-md-3 col-sm-6 footer-col">
+                <h5 class="text-center">Quick Links</h5>
+                <ul class="footer-links mt-3">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="{% url 'contact_page' %}">Contact Us</a></li>
+                </ul>
+            </div>
+            
+            <!-- Help -->
+            <div class="col-md-3 col-sm-6 footer-col">
+                <h5 class="text-center">Help</h5>
+                <ul class="footer-links mt-3">
+                    <li><a href="{% url 'contact_page' %}">Contact Us</a></li>
+                    <li><a href="#">Terms And Conditions</a></li>
+                </ul>
+            </div>
+            
+            <!-- Subscribe Section -->
+            <div class="col-md-3 col-sm-6 footer-col">
+                <h5 class="text-center">Follow Us</h5>
+                
+                <div class="social-links mt-3">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Copyrights -->
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <p>&copy; 2024 All Rights Reserved</p>
+            </div>
+        </div>
+    </div>
+  </footer>
+  
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="{% static 'javascript/script.js' %}"></script>
+    <script>
+      $(document).ready(function () {
+    // Function to update subtotal and total price
+    function updatePrices() {
+        let totalPrice = 0;
+
+        $('.cart-item').each(function () {
+            let quantity = $(this).find('.quantity-input').val(); // Get quantity
+            let pricePerItem = $(this).find('.subtotal').data('price'); // Get price per item
+            let newSubtotal = quantity * pricePerItem; // Calculate new subtotal
+
+            // Update subtotal display
+            $(this).find('.subtotal').text('₹' + newSubtotal.toFixed(2));
+
+            // Add to total price
+            totalPrice += newSubtotal;
+        });
+
+        // Update total price display
+        $('#total-price').text('₹' + totalPrice.toFixed(2));
+    }
+
+    // Trigger update when quantity changes
+    $('.quantity-input').on('input', function () {
+        const quantityInput = $(this);
+        const cartId = quantityInput.data('cart-id');
+        const quantity = quantityInput.val();
+
+        // Send AJAX request to update quantity in the backend
+        $.ajax({
+            url: "{% url 'update_cart_quantity' %}",
+            type: 'POST',
+            data: {
+                cart_id: cartId,
+                quantity: quantity,
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            },
+            success: function (response) {
+                updatePrices(); // Update prices locally
+            },
+            error: function (xhr, status, error) {
+                alert('Error updating quantity. Please try again.');
+            }
+        });
+    });
+});
+
+    </script>
+</body>
+</html>

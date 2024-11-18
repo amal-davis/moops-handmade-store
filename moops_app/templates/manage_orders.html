@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>manage_orders</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+    <link rel="icon" href="{% static 'images/fav_icon.png' %}" type="image/png">
+
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+</head>
+<body>
+    
+    <header class="header" style="background-color: #f5f5dc; ">
+        <div class="containers">
+          <div class="rows v-center">
+            <div class="header-item item-left">
+              <div class="logo">
+                <a href="/">
+                  <img src="{% static 'images/logo.png' %}" alt="">
+                </a>
+              </div>
+            </div>
+            <!-- menu start here -->
+            <div class="header-item item-center">
+              <div class="menu-overlay"></div>
+              <nav class="menu">
+                <div class="mobile-menu-head">
+                  <div class="go-back"><i class="fa fa-angle-left"></i></div>
+                  <div class="current-menu-title"></div>
+                  <div class="mobile-menu-close">&times;</div>
+                </div>
+                <ul class="menu-main" style="padding-left: 0px;">
+                  <li>
+                    <a href="/" style="text-decoration: none;">Home</a>
+                  </li>
+                  <li class="menu-item-has-children">
+                    <a href="#"style="text-decoration: none;">New <i class="fa fa-angle-down"></i></a>
+    <div class="sub-menu mega-menu mega-menu-column-4">
+      <!-- Loop through the product types -->
+      {% for product_type in product_types %}
+      <div class="list-item text-center">
+          <!-- Link to the specific product type page -->
+          <a href="{% url 'product_type_page' product_type.id %}" style="text-decoration: none;">
+              <!-- Display the product type image -->
+              <img src="{{ product_type.image.url }}" alt="{{ product_type.name }}"  />
+              <!-- Display the product type name as heading -->
+              <h4 class="title">{{ product_type.name }}</h4>
+          </a>
+      </div>
+      {% endfor %}
+    </div>
+    
+                  </li>
+                  <li class="menu-item-has-children">
+                    <a href="#" style="text-decoration: none;">Shop <i class="fa fa-angle-down"></i></a>
+                    <div class="sub-menu mega-menu mega-menu-column-4">
+                        {% for product_type in product_types %}
+                        <div class="list-item">
+                            <h4 class="title">{{ product_type.name }}</h4>
+                            <ul>
+                                {% for category in categories %}
+                                {% if category.product_type == product_type %}
+                                <li><a href="{% url 'category_view' category.id %}" style="text-decoration: none;">{{ category.name }}</a></li>
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endfor %}
+                        <!-- <div class="list-item">
+                            <img src="https://images.unsplash.com/photo-1549497538-303791108f95?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=761&q=80" alt="Chair" />
+                        </div> -->
+                    </div>
+                </li>
+                <li>
+                  <a href="{% url 'contact_page' %}" style="text-decoration: none;">About Us</a>
+                </li>
+    
+                  <li>
+                    <a href="{% url 'contact_page' %}" style="text-decoration: none;">Contact</a>
+                  </li>
+                  <li class="menu-item-has-children">
+                      <a href="#" style="text-decoration: none;"><i class="fa-solid fa-user"></i> <i class="fas fa-angle-down"></i></a>
+                      <div class="sub-menu single-column-menu">
+                        <ul>
+                          <li><a href="{% url 'logout' %}" style="text-decoration: none;">Logout</a></li>
+                          <li><a href="{% url 'signup_page' %}" style="text-decoration: none;">Register</a></li>
+                          <li><a href="{% url 'user_orders' %}" style="text-decoration: none;">Order</a></li>
+                          <li><a href="{% url 'user_customize_orders' %}" style="text-decoration: none;">Customized Order</a></li>
+                          
+                        </ul>
+                      </div>
+                    </li>
+                </ul>
+              </nav>
+            </div>
+            <!-- menu end here -->
+            <div class="header-item item-right">
+              <a href="{% url 'wishlist' %}" style="text-decoration: none;"><i class="far fa-heart"></i></a>
+              <a href="{% url 'cart_page' %}" style="text-decoration: none;">
+                  <i class="fas fa-shopping-cart"></i>
+                  <span class="cart-quantity-badge">{% if cart_quantity is not None %}{{ cart_quantity }}{% else %}0{% endif %}</span>
+              </a>
+              <!-- mobile menu trigger -->
+              <div class="mobile-menu-trigger">
+                <span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+
+
+
+
+      <div class="container mt-5">
+        <h2 class="mb-4 text-center">Manage Orders</h2>
+        
+        {% if orders %}
+            {% for order in orders %}
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Order ID: {{ order.id }}</h5>
+                        <p><strong>Name:</strong> {{ order.name }}</p>
+                        <p><strong>Address:</strong> {{ order.address }}</p>
+                        <p><strong>Total Amount:</strong> {{ order.total_amount }}</p>
+                        <p><strong>Status:</strong> {{ order.get_status_display }}</p>
+                        <p><strong>Placed On:</strong> {{ order.created_at }}</p>
+                        <a href="#" class="btn btn-info btn-sm mt-2" data-bs-toggle="modal" data-bs-target="#orderDetailModal{{ order.id }}">View & Update</a>
+    
+                        <!-- Order Detail Modal -->
+                        <div class="modal fade" id="orderDetailModal{{ order.id }}" tabindex="-1" aria-labelledby="orderDetailLabel{{ order.id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="orderDetailLabel{{ order.id }}">Order Details - ID: {{ order.id }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><strong>Name:</strong> {{ order.name }}</p>
+                                        <p><strong>Address:</strong> {{ order.address }}</p>
+                                        <p><strong>Email:</strong> {{ order.email }}</p>
+                                        <p><strong>Phone:</strong> {{ order.phone }}</p>
+                                        <hr>
+                                        <h5>Ordered Items</h5>
+                                        <ul class="list-group">
+                                            {% for item in order.items.all %}
+                                                <li class="list-group-item">
+                                                    {{ item.customized_product.name }} - {{ item.quantity }} x {{ item.price }}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+    
+                                        <!-- Update Order Status Form -->
+                                        <form method="POST" class="mt-4">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="order_id" value="{{ order.id }}">
+                                            <div class="mb-3">
+                                                <label for="status" class="form-label">Update Status:</label>
+                                                <select id="status" name="status" class="form-select" required>
+                                                    {% for status, display in order.STATUS_CHOICES %}
+                                                        <option value="{{ status }}" {% if order.status == status %}selected{% endif %}>{{ display }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Update Status</button>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End of Modal -->
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-center">No orders found.</p>
+        {% endif %}
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script src="{% static 'javascript/script.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

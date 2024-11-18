@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/signin.css' %}">
+    <link rel="icon" href="{% static 'images/fav_icon.png' %}" type="image/png">
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+</head>
+<style>
+  .password-container {
+            position: relative;
+            width: 300px;
+        }
+
+        #password {
+            padding-right: 30px;
+        }
+
+        .eye-icon {
+            position: absolute;
+            top: 65%;
+            right: 18px;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+</style>
+<body>
+    
+
+ <!-- <div class="scroll-container"></div> -->
+    <!-- header start -->
+
+    <header class="header" style="background-color: #f5f5dc; ">
+      <div class="containers">
+        <div class="rows v-center">
+          <div class="header-item item-left">
+            <div class="logo">
+              <a href="/">
+                <img src="{% static 'images/logo.png' %}" alt="">
+              </a>
+            </div>
+          </div>
+          <!-- menu start here -->
+          <div class="header-item item-center">
+            <div class="menu-overlay"></div>
+            <nav class="menu">
+              <div class="mobile-menu-head">
+                <div class="go-back"><i class="fa fa-angle-left"></i></div>
+                <div class="current-menu-title"></div>
+                <div class="mobile-menu-close">&times;</div>
+              </div>
+              <ul class="menu-main" style="padding-left: 0px;">
+                <li>
+                  <a href="/" style="text-decoration: none;">Home</a>
+                </li>
+                <li class="menu-item-has-children">
+                  <a href="#"style="text-decoration: none;">New <i class="fa fa-angle-down"></i></a>
+  <div class="sub-menu mega-menu mega-menu-column-4">
+    <!-- Loop through the product types -->
+    {% for product_type in product_types %}
+    <div class="list-item text-center">
+        <!-- Link to the specific product type page -->
+        <a href="{% url 'product_type_page' product_type.id %}" style="text-decoration: none;">
+            <!-- Display the product type image -->
+            <img src="{{ product_type.image.url }}" alt="{{ product_type.name }}"  />
+            <!-- Display the product type name as heading -->
+            <h4 class="title">{{ product_type.name }}</h4>
+        </a>
+    </div>
+    {% endfor %}
+  </div>
+  
+                </li>
+                <li class="menu-item-has-children">
+                  <a href="#" style="text-decoration: none;">Shop <i class="fa fa-angle-down"></i></a>
+                  <div class="sub-menu mega-menu mega-menu-column-4">
+                      {% for product_type in product_types %}
+                      <div class="list-item">
+                          <h4 class="title">{{ product_type.name }}</h4>
+                          <ul>
+                              {% for category in categories %}
+                              {% if category.product_type == product_type %}
+                              <li><a href="{% url 'category_view' category.id %}" style="text-decoration: none;">{{ category.name }}</a></li>
+                              {% endif %}
+                              {% endfor %}
+                          </ul>
+                      </div>
+                      {% endfor %}
+                      <!-- <div class="list-item">
+                          <img src="https://images.unsplash.com/photo-1549497538-303791108f95?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=761&q=80" alt="Chair" />
+                      </div> -->
+                  </div>
+              </li>
+              <li>
+                <a href="{% url 'contact_page' %}" style="text-decoration: none;">About Us</a>
+              </li>
+  
+                <li>
+                  <a href="{% url 'contact_page' %}" style="text-decoration: none;">Contact</a>
+                </li>
+                <li class="menu-item-has-children">
+                    <a href="#" style="text-decoration: none;"><i class="fa-solid fa-user"></i> <i class="fas fa-angle-down"></i></a>
+                    <div class="sub-menu single-column-menu">
+                      <ul>
+                        <li><a href="{% url 'logout' %}" style="text-decoration: none;">Logout</a></li>
+                        <li><a href="{% url 'signup_page' %}" style="text-decoration: none;">Register</a></li>
+                        <li><a href="{% url 'user_orders' %}" style="text-decoration: none;">Order</a></li>
+                        <li><a href="{% url 'user_customize_orders' %}" style="text-decoration: none;">Customized Order</a></li>
+                        
+                      </ul>
+                    </div>
+                  </li>
+              </ul>
+            </nav>
+          </div>
+          <!-- menu end here -->
+          <div class="header-item item-right">
+            <a href="{% url 'wishlist' %}" style="text-decoration: none;"><i class="far fa-heart"></i></a>
+            <a href="{% url 'cart_page' %}" style="text-decoration: none;">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-quantity-badge">{% if cart_quantity is not None %}{{ cart_quantity }}{% else %}0{% endif %}</span>
+            </a>
+            <!-- mobile menu trigger -->
+            <div class="mobile-menu-trigger">
+              <span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+
+
+
+      <div class="container" style="margin-top: 120px;padding-bottom: 10%;">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-header  text-white">
+                        <h4 class="text-center">Create Account</h4>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="{% url 'usercreate' %}" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-group col">
+                                <label for="first_name">First Name</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" required>
+                            </div>
+                            <div class="form-group col">
+                                <label for="last_name">Last Name</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" required>
+                            </div>
+                            <div class="form-group col">
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" id="username" name="username" required>
+                            </div>
+                            <div class="form-group col">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="form-group col">
+                                <label for="phone">Phone No</label>
+                                <input type="text" class="form-control" id="phone" name="phone" required>
+                            </div>
+                            <div class="form-group col">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" required>
+                                <span class="eye-icon" onclick="togglePassword()"></span>
+                            </div>
+                            <div class="form-group col">
+                                <label for="confirm_password">Confirm Password</label>
+                                <input type="password" class="form-control" id="cpassword" name="confirm_password" required>
+                                <span class="eye-icon" onclick="togglePassword()"></span>
+                            </div>
+                            <div class="form-group col">
+                              <button type="submit" id="submit-button" class="btn  btn-block" disabled>Sign Up</button>
+
+                            </div>
+                        </form>
+                        <div class="mt-3">
+                            <p>Already have an account? <a href="{% url 'login_page' %}">Login</a></p>
+                        </div>
+                    </div>
+                    {% for message in messages %}
+    <h5 class="alert text-danger">
+        
+        {{ message }}
+        
+    </h5>
+    {% endfor %}
+    <div id="password-error" style="color: red;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <footer class="footer-section">
+      <div class="container">
+          <div class="row">
+              <!-- Our Shop Links -->
+              <div class="col-md-3 col-sm-6 footer-col">
+                  <h5 class="text-center">Our Shop</h5>
+                  <ul class="footer-links mt-3">
+                    {% for product_type in product_types %}
+                      <li><a href="{% url 'product_type_page' product_type.id %}">{{ product_type.name }}</a></li>
+                      
+                      {% endfor %}
+                  </ul>
+              </div>
+              
+              <!-- Quick Links -->
+              <div class="col-md-3 col-sm-6 footer-col">
+                  <h5 class="text-center">Quick Links</h5>
+                  <ul class="footer-links mt-3">
+                      <li><a href="/">Home</a></li>
+                      <li><a href="#">About Us</a></li>
+                      <li><a href="{% url 'contact_page' %}">Contact Us</a></li>
+                  </ul>
+              </div>
+              
+              <!-- Help -->
+              <div class="col-md-3 col-sm-6 footer-col">
+                  <h5 class="text-center">Help</h5>
+                  <ul class="footer-links mt-3">
+                      <li><a href="{% url 'contact_page' %}">Contact Us</a></li>
+                      <li><a href="#">Terms And Conditions</a></li>
+                  </ul>
+              </div>
+              
+              <!-- Subscribe Section -->
+              <div class="col-md-3 col-sm-6 footer-col">
+                  <h5 class="text-center">Follow Us</h5>
+                  
+                  <div class="social-links mt-3">
+                      <a href="#"><i class="fab fa-instagram"></i></a>
+                      <a href="#"><i class="fab fa-facebook-f"></i></a>
+                      <a href="#"><i class="fab fa-youtube"></i></a>
+                      <a href="#"><i class="fab fa-whatsapp"></i></a>
+                  </div>
+              </div>
+          </div>
+          
+          <!-- Copyrights -->
+          <div class="row mt-4">
+              <div class="col-12 text-center">
+                  <p>&copy; 2024 All Rights Reserved</p>
+              </div>
+          </div>
+      </div>
+    </footer>
+    
+
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="{% static 'javascript/script.js' %}"></script>
+
+<script>
+          document.addEventListener('DOMContentLoaded', function () {
+    // Function to validate password and show/hide error messages
+    function validatePassword() {
+      const passwordInput = document.getElementById('password');
+      const confirmPasswordInput = document.getElementById('cpassword');
+      const passwordError = document.getElementById('password-error');
+      const submitButton = document.getElementById('submit-button');
+
+      const password = passwordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
+
+      // Your password validation conditions
+      const isValidPassword = password.length >= 8 && /[A-Z]/.test(password) && /\d/.test(password) && /[^A-Za-z\d]/.test(password);
+
+      // Update error message and enable/disable submit button
+      if (!isValidPassword) {
+        passwordError.innerText = 'Password must be at least 8 characters and include at least one uppercase letter, one number, and one special character.';
+        submitButton.disabled = true;
+      } else {
+        passwordError.innerText = '';
+        submitButton.disabled = false;
+      }
+    }
+
+    // Attach the validatePassword function to password input and confirm password input events
+    document.getElementById('password').addEventListener('input', validatePassword);
+    document.getElementById('cpassword').addEventListener('input', validatePassword);
+  });
+
+
+  function togglePasswords() {
+            var passwordInput = document.getElementById('password');
+            var eyeIcon = document.querySelector('.eye-icon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.textContent = '👁️';
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.textContent = '👁️';
+            }
+        }
+        function togglePassword() {
+            var passwordInput = document.getElementById('cpassword');
+            var eyeIcon = document.querySelector('.eye-icon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.textContent = '👁️';
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.textContent = '👁️';
+            }
+        }
+</script>
+</body>
+</html>

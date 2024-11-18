@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+<!-- Font Awesome (only include once) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<!-- Owl Carousel CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+
+<!-- Custom CSS (static file for your product page) -->
+<link rel="stylesheet" href="{% static 'css/product.css' %}">
+<link rel="icon" href="{% static 'images/fav_icon.png' %}" type="image/png">
+
+
+
+    <title>Product Details</title>
+</head>
+<style>
+ .magnifier {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 2px solid #000;
+    cursor: none;
+    background: rgba(255, 255, 255, 0.5);
+    background-repeat: no-repeat;
+    background-size: 1000px 1200px; /* Same size as the image */
+    display: none;
+}
+.rating {
+ 
+ border: none;
+ float: left;
+}
+
+.rating > label {
+ color: #90A0A3;
+ float: right;
+}
+
+.rating > label:before {
+ margin: 5px;
+ font-size: 1.5em;
+ font-family: FontAwesome;
+ content: "\f005";
+ display: inline-block;
+}
+
+.rating > input {
+ display: none;
+}
+
+.rating > input:checked ~ label,
+.rating:not(:checked) > label:hover,
+.rating:not(:checked) > label:hover ~ label {
+ color: #f7f026;
+}
+
+.rating > input:checked + label:hover,
+.rating > input:checked ~ label:hover,
+.rating > label:hover ~ input:checked ~ label,
+.rating > input:checked ~ label:hover ~ label {
+ color: #f7f026;
+}
+.review {
+   margin-bottom: 10px; /* Adjust the margin as needed for the desired separation */
+   border-bottom: 1px solid #000B41; /* Optional: Add a border-bottom for further separation */
+   padding-bottom: 10px; /* Optional: Add padding at the bottom for spacing */
+}
+.form-control {
+    border-radius: 0; 
+}
+.btn{
+    border-radius: 0;
+}
+.form-control:focus {
+    border-color: #ced4da; /* Set the desired border color when focused */
+    box-shadow: none; /* Remove the box shadow */
+}
+.stars-container {
+        display: inline-block;
+        font-size: 24px; /* Adjust the font size to change the size of the stars */
+        color: #FFD700; /* Set the color of the stars (here, it's a golden color) */
+        line-height: 1; /* Adjust the line height to vertically align stars */
+    }
+
+    .rating-container {
+        margin-top: 10px; /* Adjust the margin for space between the rating and the comment */
+    }
+    .star-rating i {
+            color: #ffd700; /* Star color */
+        }
+        .owl-carousel .item img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.custom-prev-button, .custom-next-button {
+    cursor: pointer;
+    font-size: 20px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+}
+
+.custom-prev-button {
+    left: 10px;
+}
+
+.custom-next-button {
+    right: 10px;
+}
+
+
+</style>
+<body>
+  
+    <header class="header" style="background-color: #f5f5dc; ">
+        <div class="containers">
+          <div class="rows v-center">
+            <div class="header-item item-left">
+              <div class="logo">
+                <a href="/">
+                  <img src="{% static 'images/logo.png' %}" alt="">
+                </a>
+              </div>
+            </div>
+            <!-- menu start here -->
+            <div class="header-item item-center">
+              <div class="menu-overlay"></div>
+              <nav class="menu">
+                <div class="mobile-menu-head">
+                  <div class="go-back"><i class="fa fa-angle-left"></i></div>
+                  <div class="current-menu-title"></div>
+                  <div class="mobile-menu-close">&times;</div>
+                </div>
+                <ul class="menu-main" style="padding-left: 0px;">
+                  <li>
+                    <a href="/" style="text-decoration: none;">Home</a>
+                  </li>
+                  <li class="menu-item-has-children">
+                    <a href="#"style="text-decoration: none;">New <i class="fa fa-angle-down"></i></a>
+    <div class="sub-menu mega-menu mega-menu-column-4">
+      <!-- Loop through the product types -->
+      {% for product_type in product_types %}
+      <div class="list-item text-center">
+          <!-- Link to the specific product type page -->
+          <a href="{% url 'product_type_page' product_type.id %}" style="text-decoration: none;">
+              <!-- Display the product type image -->
+              <img src="{{ product_type.image.url }}" alt="{{ product_type.name }}"  />
+              <!-- Display the product type name as heading -->
+              <h4 class="title">{{ product_type.name }}</h4>
+          </a>
+      </div>
+      {% endfor %}
+    </div>
+    
+                  </li>
+                  <li class="menu-item-has-children">
+                    <a href="#" style="text-decoration: none;">Shop <i class="fa fa-angle-down"></i></a>
+                    <div class="sub-menu mega-menu mega-menu-column-4">
+                        {% for product_type in product_types %}
+                        <div class="list-item">
+                            <h4 class="title">{{ product_type.name }}</h4>
+                            <ul>
+                                {% for category in categories %}
+                                {% if category.product_type == product_type %}
+                                <li><a href="{% url 'category_view' category.id %}" style="text-decoration: none;">{{ category.name }}</a></li>
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endfor %}
+                        <!-- <div class="list-item">
+                            <img src="https://images.unsplash.com/photo-1549497538-303791108f95?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=761&q=80" alt="Chair" />
+                        </div> -->
+                    </div>
+                </li>
+                <li>
+                  <a href="{% url 'contact_page' %}" style="text-decoration: none;">About Us</a>
+                </li>
+    
+                  <li>
+                    <a href="{% url 'contact_page' %}" style="text-decoration: none;">Contact</a>
+                  </li>
+                  <li class="menu-item-has-children">
+                      <a href="#" style="text-decoration: none;"><i class="fa-solid fa-user"></i> <i class="fas fa-angle-down"></i></a>
+                      <div class="sub-menu single-column-menu">
+                        <ul>
+                          <li><a href="{% url 'logout' %}" style="text-decoration: none;">Logout</a></li>
+                          <li><a href="{% url 'signup_page' %}" style="text-decoration: none;">Register</a></li>
+                          <li><a href="{% url 'user_orders' %}" style="text-decoration: none;">Order</a></li>
+                          <li><a href="{% url 'user_customize_orders' %}" style="text-decoration: none;">Customized Order</a></li>
+                          
+                        </ul>
+                      </div>
+                    </li>
+                </ul>
+              </nav>
+            </div>
+            <!-- menu end here -->
+            <div class="header-item item-right">
+              <a href="{% url 'wishlist' %}" style="text-decoration: none;"><i class="far fa-heart"></i></a>
+              <a href="{% url 'cart_page' %}" style="text-decoration: none;">
+                  <i class="fas fa-shopping-cart"></i>
+                  <span class="cart-quantity-badge">{% if cart_quantity is not None %}{{ cart_quantity }}{% else %}0{% endif %}</span>
+              </a>
+              <!-- mobile menu trigger -->
+              <div class="mobile-menu-trigger">
+                <span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+
+      <div class="container-fluid product-container" style="margin-top: 160px;padding: 20px;">
+        <div class="row  g-md-5 g-0">
+            <!-- Product Images -->
+            <div class="col-md-6">
+                <!-- Main Image Slider -->
+                <div id="main-carousel" class="owl-carousel owl-theme">
+                    {% for image in product.images.all %}
+                        <div class="item img-container">
+                            <img id="image" src="{{ image.image.url }}" alt="{{ product.heading }}" class="main-image img-fluid">
+                        </div>
+                    {% endfor %}
+                </div>
+           
+                <!-- Thumbnail Slider -->
+                <div id="thumb-carousel" class="owl-carousel owl-theme mt-3">
+                    {% for image in product.images.all %}
+                        <div class="item">
+                            <img src="{{ image.image.url }}" alt="{{ product.heading }}" class="thumbnail" style="max-width: 100px;">
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+           
+
+            
+           
+           
+    
+            <!-- Product Info -->
+            <div class="col-md-6">
+                <div class="product-info">
+                    <h2>{{ product.heading }}</h2>
+
+                    <div class="star-rating mb-2">
+                      {% for _ in stars_representation.full_stars %}
+                          <i class="fas fa-star"></i>
+                      {% endfor %}
+                      {% if stars_representation.half_star %}
+                          <i class="fas fa-star-half-alt"></i>
+                      {% endif %}
+                      {% for _ in stars_representation.empty_stars %}
+                          <i class="far fa-star"></i>
+                      {% endfor %}
+                      ({{ reviews.count }} Reviews)
+                  </div>
+    
+                    <div class="product-price mt-5">
+                        <h1 class="original-price">₹{{ product.original_price }}</h1>
+                        {% if product.discount_price %}
+                            <h1 class="discount-price" style="color: #1A946F;">₹{{ product.discount_price }}</h1>
+                        {% endif %}
+                    </div>
+    
+                    <div class="product-quantity mt-5">
+                      <form action="{% url 'add_to_cart_details' pk=product.id %}" method="post">
+
+                        {% csrf_token %}
+                        
+                        <input type="number" name="quantity" class="quantity-input" value="1">
+                        
+                    </div>
+    
+                    <div class="product-buttons mt-5">
+                        <button type="submit" class="btn btn-md btn-block" style="background-color: #0c3536; color: #fff; border-radius: 0px; width: 55%;">Buy Now</button>
+                        <button type="submit" class="btn btn-success btn-md btn-block mt-3" style="background-color: #1A946F; color: #fff; border-radius: 0px; width: 55%;">Add to Cart</button>
+                    </div>
+                  </form>
+    
+                    <p class="mt-5" style="white-space: pre-line;">{{ product.description|safe }}</p>
+    
+                    <!-- Decrease video width here -->
+                    <div class="video-section mt-5" style="max-width: 320px;">
+                        <div class="video-container">
+                            <video controls style="width: 100%;">
+                                <source src="{{ product.video.url }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Benefits Section -->
+                <div class="benefits-section mt-5">
+                    <h4>Benefits</h4>
+                   <div class="container" style="text-align: justify;">
+                    <p>{{ product.description|safe }}</p>
+                   </div>
+                </div>
+    
+                <!-- FAQ Section -->
+                <!-- <div class="container" style="margin-top: 40px;">
+                    <h2 class="text-center">FAQ</h2>
+                    <div class="accordion accordion-flush mt-3" id="accordionFlushExample">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                    What web development platforms and technologies do you specialize in?
+                                </button>
+                            </h2>
+                            <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">We specialize in a wide range of platforms and technologies, including
+                                    Python, Django, Shopify. Our team stays updated with the latest
+                                    trends and technologies to ensure your website is built using the most effective
+                                    tools available.</div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                                    Do you provide ongoing website maintenance and support after the initial development phase?
+                                </button>
+                            </h2>
+                            <div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">Yes, we offer comprehensive website maintenance and support services to
+                                    ensure your website remains secure, up-to-date, and performing optimally. Our team can handle
+                                    everything from software updates and security patches to content updates, troubleshooting, and
+                                    performance optimization. With our ongoing support, you can focus on running your business while
+                                    we take care of your website's maintenance needs.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                                    Can you help migrate my existing website to a new platform or redesign it without losing
+                                    existing content and SEO rankings?
+                                </button>
+                            </h2>
+                            <div id="flush-collapseThree" class="accordion-collapse collapse"
+                                data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">Absolutely! Whether you're looking to migrate your website to a new
+                                    platform or give it a fresh redesign, we have the expertise to ensure a smooth transition
+                                    without sacrificing your existing content or SEO rankings. Our team follows best practices for
+                                    website migration and redesign, including proper redirections, URL structure preservation, and
+                                    content optimization, to ensure minimal disruption and maximum SEO value for your website.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+                <div class=" mt-5">
+                  <form method="post" action="{% url 'product_details' product.id %}" style="margin-top: 40px;">
+                    {% csrf_token %}
+                    
+                    <!-- Rating Input as stars -->
+                    <div class="rating">
+                        <input type="radio" id="star5" name="rating" value="5" />
+                        <label class="star" for="star5" title="Awesome" aria-hidden="true"></label>
+                        <input type="radio" id="star4" name="rating" value="4" />
+                        <label class="star" for="star4" title="Great" aria-hidden="true"></label>
+                        <input type="radio" id="star3" name="rating" value="3" />
+                        <label class="star" for="star3" title="Very good" aria-hidden="true"></label>
+                        <input type="radio" id="star2" name="rating" value="2" />
+                        <label class="star" for="star2" title="Good" aria-hidden="true"></label>
+                        <input type="radio" id="star1" name="rating" value="1" />
+                        <label class="star" for="star1" title="Bad" aria-hidden="true"></label>
+                      </div>
+                    <br>
+                    <!-- Comment Input -->
+                    <!-- <label for="id_comment">Comment:</label> -->
+                    <textarea class="form-control mt-3" name="comment" id="id_comment" placeholder="Add a review"></textarea>
+                    
+                    <button class="btn  mt-4" type="submit" style="background-color: #0c3536; color: #fff;">Submit Review</button>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container mt-5">
+
+      <h2 style="color: #000B41;" class="text-center">Reviews</h2>
+      <div id="reviews-container">
+          {% for review in reviews %}
+              <div class="review">
+                  <h4 style="color: #000B41; font-size: 18px;">{{ review.user }}</h4>
+                  <h4 style="color: #000B41; font-size: 18px;">{{ review.created_at|date:"Y-m-d" }}</h4>
+  
+                  <div class="rating-container">
+                      <h4 style="color: #000B41; font-size: 18px;">Rating: 
+                          <span class="stars-container" data-rating="{{ review.rating }}"></span>
+                      </h4>
+                  </div>
+                  <h4 style="color: #000B41; font-size: 18px;">{{ review.comment }}</h4>
+              </div>
+          {% endfor %}
+      </div>
+      </div>
+
+
+
+      <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <!-- Our Shop Links -->
+                <div class="col-md-3 col-sm-6 footer-col">
+                    <h5 class="text-center">Our Shop</h5>
+                    <ul class="footer-links mt-3">
+                      {% for product_type in product_types %}
+                        <li><a href="{% url 'product_type_page' product_type.id %}">{{ product_type.name }}</a></li>
+                        
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <!-- Quick Links -->
+                <div class="col-md-3 col-sm-6 footer-col">
+                    <h5 class="text-center">Quick Links</h5>
+                    <ul class="footer-links mt-3">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="{% url 'contact_page' %}">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Help -->
+                <div class="col-md-3 col-sm-6 footer-col">
+                    <h5 class="text-center">Help</h5>
+                    <ul class="footer-links mt-3">
+                        <li><a href="{% url 'contact_page' %}">Contact Us</a></li>
+                        <li><a href="#">Terms And Conditions</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Subscribe Section -->
+                <div class="col-md-3 col-sm-6 footer-col">
+                    <h5 class="text-center">Follow Us</h5>
+                    
+                    <div class="social-links mt-3">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Copyrights -->
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <p>&copy; 2024 All Rights Reserved</p>
+                </div>
+            </div>
+        </div>
+      </footer>
+      
+    
+
+<!-- Include jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Include Owl Carousel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+
+<!-- Include Popper.js (Optional if using Bootstrap tooltips/popovers) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+<!-- Include Bootstrap -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+<!-- Custom script -->
+<script src="{% static 'javascript/script.js' %}"></script>
+
+
+    
+    <script>
+var mainCarousel = $('#main-carousel');
+var thumbCarousel = $('#thumb-carousel');
+            
+                mainCarousel.owlCarousel({
+                    items: 1,
+                    nav: false,
+                    dots: false,
+                    loop: false,
+                    autoplay: false,
+                    onChanged: syncPosition
+                });
+            
+                thumbCarousel.owlCarousel({
+                    items: 3,
+                    margin: 10,
+                    nav: false,
+                    dots: false,
+                    center: true,
+                    loop: false,
+                    responsive: {
+                        0: {
+                            items: 2
+                        },
+                        600: {
+                            items: 2
+                        },
+                        1000: {
+                            items: 5
+                        }
+                    }
+                });
+            
+                function syncPosition(event) {
+                    var index = event.item.index;
+                    thumbCarousel
+                        .find(".owl-item")
+                        .removeClass("active-thumbnail")
+                        .eq(index)
+                        .addClass("active-thumbnail");
+                    var onscreen = thumbCarousel.find('.owl-item.active').length - 1;
+                    var start = thumbCarousel.find('.owl-item.active').first().index();
+                    var end = thumbCarousel.find('.owl-item.active').last().index();
+            
+                    if (index > end) {
+                        thumbCarousel.trigger('to.owl.carousel', [index - onscreen, 300, true]);
+                    }
+                    if (index < start) {
+                        thumbCarousel.trigger('to.owl.carousel', [index - 1, 300, true]);
+                    }
+                }
+            
+                thumbCarousel.on('click', '.owl-item', function (e) {
+                    e.preventDefault();
+                    var index = $(this).index();
+                    mainCarousel.trigger('to.owl.carousel', [index, 300, true]);
+                });
+            
+                thumbCarousel.on('changed.owl.carousel', function (event) {
+                    var index = event.item.index;
+                    mainCarousel.trigger('to.owl.carousel', [index, 300, true]);
+                });
+
+
+
+    
+
+        document.addEventListener("DOMContentLoaded", function() {
+    const productImages = document.querySelectorAll(".product-image");
+    const magnifier = document.querySelector(".magnifier");
+    const magnifierSize = 200; // Magnifier size
+    const scale = 2; // Magnification scale
+
+    productImages.forEach(image => {
+        image.addEventListener("mousemove", function(e) {
+            showMagnifier(e, image);
+        });
+
+        image.addEventListener("mouseout", function() {
+            hideMagnifier();
+        });
+    });
+
+    function showMagnifier(e, image) {
+        const imageRect = image.getBoundingClientRect();
+        const x = e.clientX - imageRect.left - magnifierSize / 2;
+        const y = e.clientY - imageRect.top - magnifierSize / 2;
+
+        if (x > 0 && y > 0 && x < imageRect.width - magnifierSize && y < imageRect.height - magnifierSize) {
+            magnifier.style.left = x + "px";
+            magnifier.style.top = y + "px";
+            magnifier.style.backgroundImage = `url(${image.src})`;
+            magnifier.style.backgroundPosition = `-${x * scale}px -${y * scale}px`;
+            magnifier.style.display = "block";
+        } else {
+            hideMagnifier();
+        }
+    }
+
+    function hideMagnifier() {
+        magnifier.style.display = "none";
+    }
+});
+
+
+// Loop through all elements with the 'stars-container' class
+document.querySelectorAll('.stars-container').forEach(function(starsContainer) {
+        // Get the rating value from the data-rating attribute
+        var ratingValue = parseInt(starsContainer.getAttribute('data-rating'), 10);
+        
+        // Call the function to display stars based on the rating
+        displayStars(starsContainer, ratingValue);
+    });
+
+    function displayStars(starsContainer, rating) {
+        // Clear any previous content
+        starsContainer.innerHTML = '';
+        
+        // Create and append star elements based on the rating
+        for (var i = 0; i < rating; i++) {
+            var star = document.createElement('span');
+            star.innerHTML = '★'; // Use any star symbol or icon you prefer
+            starsContainer.appendChild(star);
+        }
+    }
+
+
+    </script>
+    

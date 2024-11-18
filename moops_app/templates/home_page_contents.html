@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Home Pgae Contents</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+    <link rel="icon" href="{% static 'images/fav_icon.png' %}" type="image/png">
+
+   
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+  integrity="sha512-nRRvYQUKo6eZuNDJ6ACzhV4fMcRX49zNndVNmNx8lFXh/foUsZP9zzpXqiw6IzqRMPNsqkIEOevD7OdtJ0Gg9g=="
+  crossorigin="anonymous" />
+</head>
+<style>
+        .card-title {
+      margin-bottom: 10px;
+    }
+    .services a {
+  text-decoration: none;
+}
+.services .service-box {
+  text-align: center;
+}
+.services .service-box h2 {
+  color: #222;
+  font-size: 20px;
+  padding-top: 10px;
+  text-decoration: none;
+}
+.services a .service-box:hover h2 {
+  color: #FB0626;
+}
+.services .investor-box {
+    background-color: #0c3536;
+    background-position: center center;
+    padding: 20px;
+    width: 100%;
+    min-height: 150px;
+    display: block;
+    position: relative;
+  box-shadow: 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+}
+.services .investor-box h2 {
+  font-size: 20px;
+}
+.services .investor-box .flip-view {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  background-color: #1A946F;
+  left: -10%;
+  padding: 20px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: all ease-in-out 333ms;
+}
+.services .investor-box a {
+  color: #fff;
+  font-size: 20px;
+  font-weight: 600;
+}
+.services .investor-box:hover .flip-view {
+    left: 0;
+    visibility: visible;
+    opacity: 1;
+}
+</style>
+<body>
+
+
+  <header class="header" style="background-color: #f5f5dc; ">
+    <div class="containers">
+      <div class="rows v-center">
+        <div class="header-item item-left">
+          <div class="logo">
+            <a href="/">
+              <img src="{% static 'images/logo.png' %}" alt="">
+            </a>
+          </div>
+        </div>
+        <!-- menu start here -->
+        <div class="header-item item-center">
+          <div class="menu-overlay"></div>
+          <nav class="menu">
+            <div class="mobile-menu-head">
+              <div class="go-back"><i class="fa fa-angle-left"></i></div>
+              <div class="current-menu-title"></div>
+              <div class="mobile-menu-close">&times;</div>
+            </div>
+            <ul class="menu-main" style="padding-left: 0px;">
+              <li>
+                <a href="/" style="text-decoration: none;">Home</a>
+              </li>
+              <li class="menu-item-has-children">
+                <a href="#"style="text-decoration: none;">New <i class="fa fa-angle-down"></i></a>
+<div class="sub-menu mega-menu mega-menu-column-4">
+  <!-- Loop through the product types -->
+  {% for product_type in product_types %}
+  <div class="list-item text-center">
+      <!-- Link to the specific product type page -->
+      <a href="{% url 'product_type_page' product_type.id %}" style="text-decoration: none;">
+          <!-- Display the product type image -->
+          <img src="{{ product_type.image.url }}" alt="{{ product_type.name }}"  />
+          <!-- Display the product type name as heading -->
+          <h4 class="title">{{ product_type.name }}</h4>
+      </a>
+  </div>
+  {% endfor %}
+</div>
+
+              </li>
+              <li class="menu-item-has-children">
+                <a href="#" style="text-decoration: none;">Shop <i class="fa fa-angle-down"></i></a>
+                <div class="sub-menu mega-menu mega-menu-column-4">
+                    {% for product_type in product_types %}
+                    <div class="list-item">
+                        <h4 class="title">{{ product_type.name }}</h4>
+                        <ul>
+                            {% for category in categories %}
+                            {% if category.product_type == product_type %}
+                            <li><a href="{% url 'category_view' category.id %}" style="text-decoration: none;">{{ category.name }}</a></li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endfor %}
+                    <!-- <div class="list-item">
+                        <img src="https://images.unsplash.com/photo-1549497538-303791108f95?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=761&q=80" alt="Chair" />
+                    </div> -->
+                </div>
+            </li>
+            <li>
+              <a href="{% url 'contact_page' %}" style="text-decoration: none;">About Us</a>
+            </li>
+
+              <li>
+                <a href="{% url 'contact_page' %}" style="text-decoration: none;">Contact</a>
+              </li>
+              <li class="menu-item-has-children">
+                  <a href="#" style="text-decoration: none;"><i class="fa-solid fa-user"></i> <i class="fas fa-angle-down"></i></a>
+                  <div class="sub-menu single-column-menu">
+                    <ul>
+                      <li><a href="{% url 'logout' %}" style="text-decoration: none;">Logout</a></li>
+                      <li><a href="{% url 'signup_page' %}" style="text-decoration: none;">Register</a></li>
+                      <li><a href="#" style="text-decoration: none;">Order</a></li>
+                      
+                    </ul>
+                  </div>
+                </li>
+            </ul>
+          </nav>
+        </div>
+        <!-- menu end here -->
+        <div class="header-item item-right">
+          <a href="{% url 'wishlist' %}" style="text-decoration: none;"><i class="far fa-heart"></i></a>
+          <a href="{% url 'cart_page' %}" style="text-decoration: none;"><i class="fas fa-shopping-cart"></i></a>
+          <!-- mobile menu trigger -->
+          <div class="mobile-menu-trigger">
+            <span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+
+    <div class="services pb-5" style="margin-top: 120px;">
+        <div class="container">
+            <div class="pt-5">
+              <h2 class="vc_custom_heading ico_header" style="color: #0c3536;">Home Page Control</h2>
+              <hr>
+              <div class="row">
+                  
+                <div class="col-md-3 pt-5">
+                  <div class="investor-box">
+                    <h2 class="text-white">Top Slider Section</h2>
+                    <div class="flip-view">
+                      <a href="{% url 'add_slider_content' %}"  >Add Slider Content &nbsp;<i class="fas fa-chevron-circle-right"></i></a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3 pt-5">
+                    <div class="investor-box">
+                      <h2 class="text-white">Find Us Logos</h2>
+                      <div class="flip-view">
+                        <a href="{% url 'add_find_logo' %}"  >Add Find Us Logos &nbsp;<i class="fas fa-chevron-circle-right"></i></a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3 pt-5">
+                    <div class="investor-box">
+                      <h2 class="text-white">Add Customize Banner</h2>
+                      <div class="flip-view">
+                        <a href="{% url 'add_hero_section' %}"  >Add Customize Banner Content &nbsp;<i class="fas fa-chevron-circle-right"></i></a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3 pt-5">
+                    <div class="investor-box">
+                      <h2 class="text-white">Add Single Banner</h2>
+                      <div class="flip-view">
+                        <a href="{% url 'add_jumbotron_section' %}"  >Add Single Banner Content &nbsp;<i class="fas fa-chevron-circle-right"></i></a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3 pt-5">
+                    <div class="investor-box">
+                      <h2 class="text-white">Add Mobile Slider</h2>
+                      <div class="flip-view">
+                        <a href="{% url 'add_mobile_slider_content' %}"  >Add Mobile Slider Content &nbsp;<i class="fas fa-chevron-circle-right"></i></a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-3 pt-5">
+                    <div class="investor-box">
+                      <h2 class="text-white">Add Video Reel </h2>
+                      <div class="flip-view">
+                        <a href="{% url 'add_video' %}"  >Add Video Reel Content &nbsp;<i class="fas fa-chevron-circle-right"></i></a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                </div>
+                <div class="mt-5 text-center">
+                    <a  style="color: #1A946F;" href="{% url 'admin_page' %}">Go Back</a>
+                </div>
+                </div>
+                </div>
+
+
+    <script src="{% static 'javascript/script.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </body>
+    </html>

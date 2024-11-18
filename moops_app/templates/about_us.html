@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us</title>
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+    integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+  <link rel="icon" href="{% static 'images/fav_icon.png' %}" type="image/png">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+  integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+</head>
+<style>
+/* Container styles */
+.timeline-container {
+    margin-top: 60px;
+}
+
+/* General Timeline Container */
+.timeline-content {
+    padding: 20px;
+    position: relative;
+    opacity: 1; /* Fully visible by default */
+    transition: opacity 0.5s ease-in-out; /* Smooth fade effect */
+}
+
+.timeline-content.fade-out {
+    opacity: 0; /* Fully transparent */
+    visibility: hidden;
+}
+
+.timeline-content.fade-in {
+    opacity: 1; /* Fully visible */
+    visibility: visible;
+    transition: opacity 0.5s ease-in-out; /* Smooth fade effect */
+}
+
+
+
+.timeline-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #7fa92f;
+}
+
+.timeline-description {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #555;
+}
+
+.timeline-years {
+    position: relative;
+    margin-top: 40px;
+}
+
+.timeline-slider {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    overflow-x: auto;
+    padding: 10px;
+    scrollbar-width: none; /* For Firefox */
+}
+
+.timeline-slider::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari, and Edge */
+}
+
+.year-circle {
+    background-color: #f0f0f0;
+    color: #7fa92f;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: 2px solid #7fa92f;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex-shrink: 0; /* Prevent shrinking in slider */
+}
+
+.year-circle.active {
+    background-color: #7fa92f;
+    color: #fff;
+    transform: scale(1.2);
+}
+
+@media (max-width: 768px) {
+    .timeline-slider {
+        overflow-x: scroll;
+    }
+
+    .timeline-content {
+        text-align: left;
+    }
+
+    .timeline-title {
+        font-size: 2rem;
+    }
+
+    .year-circle {
+        width: 50px;
+        height: 50px;
+        font-size: 1rem;
+    }
+}
+.section-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #84a34d; /* Adjust to match the theme */
+    margin-bottom: 20px;
+}
+
+.section-description {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #333;
+}
+
+img {
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+/* For Responsive Behavior */
+@media (max-width: 768px) {
+    .row {
+        flex-direction: column !important;
+    }
+
+    img {
+        margin-bottom: 20px;
+    }
+}
+.hover-box {
+    border: 1px solid #ccc;
+    padding: 20px;
+    position: relative;
+    transition: all 0.3s ease;
+    background-color: #fff;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hover-box:hover {
+    background-color: #f8f9fa;
+}
+
+.icon-container {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.content-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+}
+
+.hover-box:hover .icon-container {
+    opacity: 0;
+    transform: scale(0.8);
+    cursor: pointer;
+}
+
+.hover-box:hover .content-container {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.icon {
+    width: 90px;
+    height: 90px;
+}
+
+.content-container p {
+    margin: 0;
+    color: #556b2f;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .hover-box {
+        height: 150px;
+    }
+
+    .icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .content-container p {
+        font-size: 14px;
+    }
+}
+.custom-section {
+    border-radius: 15px; /* For rounded corners */
+    overflow: hidden; /* Ensures content doesn't overflow the border-radius */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+}
+
+.text-section {
+    background-color: #f7f9f2; /* Light background color for the text section */
+    color: #333; /* Text color for better readability */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-top-left-radius: 15px; /* Top-left rounded corner */
+    border-bottom-left-radius: 15px; /* Bottom-left rounded corner */
+}
+
+.text-section h2 {
+    font-weight: bold;
+    color: #4c4c4c; /* Slightly darker heading color */
+}
+
+.text-section a {
+    color: #006400; /* Dark green color for the link */
+    text-decoration: none;
+}
+
+.text-section a:hover {
+    text-decoration: underline;
+    color: #004d00; /* Darker shade on hover */
+}
+
+.img-fluid {
+    border-top-right-radius: 15px; /* Top-right rounded corner */
+    border-bottom-right-radius: 15px; /* Bottom-right rounded corner */
+}
+
+@media (max-width: 768px) {
+    .custom-section {
+        flex-direction: column-reverse; /* Stacks image below text on smaller screens */
+        border-radius: 15px; /* Ensures rounded corners for both sections */
+    }
+
+    .text-section {
+        border-radius: 0; /* Reset rounded corners on smaller screens */
+        text-align: center;
+    }
+
+    .img-fluid {
+        border-radius: 0; /* Reset rounded corners on smaller screens */
+    }
+}
+
+
+</style>
+<body>
+    
+
+
+
+
+    <header class="header" style="background-color: #f5f5dc; ">
+        <div class="containers">
+          <div class="rows v-center">
+            <div class="header-item item-left">
+              <div class="logo">
+                <a href="/">
+                  <img src="{% static 'images/logo.png' %}" alt="">
+                </a>
+              </div>
+            </div>
+            <!-- menu start here -->
+            <div class="header-item item-center">
+              <div class="menu-overlay"></div>
+              <nav class="menu">
+                <div class="mobile-menu-head">
+                  <div class="go-back"><i class="fa fa-angle-left"></i></div>
+                  <div class="current-menu-title"></div>
+                  <div class="mobile-menu-close">&times;</div>
+                </div>
+                <ul class="menu-main" style="padding-left: 0px;">
+                  <li>
+                    <a href="/" style="text-decoration: none;">Home</a>
+                  </li>
+                  <li class="menu-item-has-children">
+                    <a href="#"style="text-decoration: none;">New <i class="fa fa-angle-down"></i></a>
+    <div class="sub-menu mega-menu mega-menu-column-4">
+      <!-- Loop through the product types -->
+      {% for product_type in product_types %}
+      <div class="list-item text-center">
+          <!-- Link to the specific product type page -->
+          <a href="{% url 'product_type_page' product_type.id %}" style="text-decoration: none;">
+              <!-- Display the product type image -->
+              <img src="{{ product_type.image.url }}" alt="{{ product_type.name }}"  />
+              <!-- Display the product type name as heading -->
+              <h4 class="title">{{ product_type.name }}</h4>
+          </a>
+      </div>
+      {% endfor %}
+    </div>
+    
+                  </li>
+                  <li class="menu-item-has-children">
+                    <a href="#" style="text-decoration: none;">Shop <i class="fa fa-angle-down"></i></a>
+                    <div class="sub-menu mega-menu mega-menu-column-4">
+                        {% for product_type in product_types %}
+                        <div class="list-item">
+                            <h4 class="title">{{ product_type.name }}</h4>
+                            <ul>
+                                {% for category in categories %}
+                                {% if category.product_type == product_type %}
+                                <li><a href="{% url 'category_view' category.id %}" style="text-decoration: none;">{{ category.name }}</a></li>
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endfor %}
+                        <!-- <div class="list-item">
+                            <img src="https://images.unsplash.com/photo-1549497538-303791108f95?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=761&q=80" alt="Chair" />
+                        </div> -->
+                    </div>
+                </li>
+                <li>
+                  <a href="{% url 'contact_page' %}" style="text-decoration: none;">About Us</a>
+                </li>
+    
+                  <li>
+                    <a href="{% url 'contact_page' %}" style="text-decoration: none;">Contact</a>
+                  </li>
+                  <li class="menu-item-has-children">
+                      <a href="#" style="text-decoration: none;"><i class="fa-solid fa-user"></i> <i class="fas fa-angle-down"></i></a>
+                      <div class="sub-menu single-column-menu">
+                        <ul>
+                          <li><a href="{% url 'logout' %}" style="text-decoration: none;">Logout</a></li>
+                          <li><a href="{% url 'signup_page' %}" style="text-decoration: none;">Register</a></li>
+                          <li><a href="{% url 'user_orders' %}" style="text-decoration: none;">Order</a></li>
+                          <li><a href="{% url 'user_customize_orders' %}" style="text-decoration: none;">Customized Order</a></li>
+                          
+                        </ul>
+                      </div>
+                    </li>
+                </ul>
+              </nav>
+            </div>
+            <!-- menu end here -->
+            <div class="header-item item-right">
+              <a href="{% url 'wishlist' %}" style="text-decoration: none;"><i class="far fa-heart"></i></a>
+              <a href="{% url 'cart_page' %}" style="text-decoration: none;">
+                  <i class="fas fa-shopping-cart"></i>
+                  <span class="cart-quantity-badge">{% if cart_quantity is not None %}{{ cart_quantity }}{% else %}0{% endif %}</span>
+              </a>
+              <!-- mobile menu trigger -->
+              <div class="mobile-menu-trigger">
+                <span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+
+      <div class="container-fluid" style="margin-top: 120px;">
+        <div class="timeline-content">
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="your-image-path.jpg" alt="Timeline Image" class="img-fluid rounded">
+                </div>
+                <div class="col-md-6">
+                    <h5 class="text-success">It's story time!</h5>
+                    <h2 class="timeline-title">The Birth of Vilvah</h2>
+                    <p class="timeline-description">
+                        In 2017, the seeds of Vilvah were sown in a home kitchen. The first product our founder created was goat milk soap to treat her daughter's eczema-prone skin.
+                        <br><br>
+                        The same year we launched our flagship retail store in Coimbatore.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="timeline-years">
+            
+            <div class="timeline-slider">
+                <div class="year-circle active" data-year="2017">2017</div>
+                <div class="year-circle" data-year="2018">2018</div>
+                <div class="year-circle" data-year="2019">2019</div>
+                <div class="year-circle" data-year="2020">2020</div>
+                <div class="year-circle" data-year="2021">2021</div>
+                <div class="year-circle" data-year="2022">2022</div>
+                <div class="year-circle" data-year="2023">2023</div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="container mt-5">
+        {% for section in sections %}
+        <div class="row align-items-center mb-5 {% if forloop.counter|divisibleby:2 %}flex-lg-row-reverse{% endif %}">
+            <div class="col-lg-6 pt-5">
+                <img src="{{ section.image.url }}" alt="{{ section.title }}" class="img-fluid rounded shadow">
+            </div>
+            <div class="col-lg-6 pt-5">
+                <h3 class="section-title">{{ section.title }}</h3>
+                <p class="section-description">{{ section.description }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    
+    <div class="container mt-5">
+        <h2 class="text-center mb-5">Why Milk</h2>
+        <div class="row text-center align-items-center">
+            {% for feature in features %}
+            <div class="col-md-6 col-lg-3 pt-5">
+                <div class="hover-box">
+                    <div class="icon-container">
+                        {% if feature.icon %}
+                        <img src="{{ feature.icon.url }}" alt="{{ feature.title }}" class="icon">
+                        {% endif %}
+                    </div>
+                    <div class="content-container">
+                        <p>{{ feature.title }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="container mt-5">
+        {% for p in section %}
+        <div class="row align-items-center custom-section mb-5">
+            <div class="col-md-6 text-section p-5">
+                <h2 class="mb-4">{{ p.title }}</h2>
+                <div style="text-align: justify;">
+                    <p>{{ p.description }}</p>
+                </div>
+               
+                <p>
+                    If you are a collaborative, self-motivated, and a high-ownership individual, write to us at
+                    <a href="mailto:{{ p.contact_email }}">{{ p.contact_email }}</a>
+                </p>
+            </div>
+            <div class="col-md-6 p-0">
+                {% if p.image %}
+                <img src="{{ p.image.url }}" alt="{{ p.title }}" class="img-fluid rounded-end">
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    
+
+    <footer class="footer-section">
+        <div class="container">
+            <div class="row">
+                <!-- Our Shop Links -->
+                <div class="col-md-3 col-sm-6 footer-col">
+                    <h5 class="text-center">Our Shop</h5>
+                    <ul class="footer-links mt-3">
+                      {% for product_type in product_types %}
+                        <li><a href="{% url 'product_type_page' product_type.id %}">{{ product_type.name }}</a></li>
+                        
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <!-- Quick Links -->
+                <div class="col-md-3 col-sm-6 footer-col">
+                    <h5 class="text-center">Quick Links</h5>
+                    <ul class="footer-links mt-3">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="{% url 'contact_page' %}">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Help -->
+                <div class="col-md-3 col-sm-6 footer-col">
+                    <h5 class="text-center">Help</h5>
+                    <ul class="footer-links mt-3">
+                        <li><a href="{% url 'contact_page' %}">Contact Us</a></li>
+                        <li><a href="#">Terms And Conditions</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Subscribe Section -->
+                <div class="col-md-3 col-sm-6 footer-col">
+                    <h5 class="text-center">Follow Us</h5>
+                    
+                    <div class="social-links mt-3">
+                        <a href="https://www.instagram.com/moops_hand_made_store/" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.facebook.com/people/Moops-Hand-Made-Store/61557992012249/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.youtube.com/@MoopsHandMadeStore" target="_blank"><i class="fab fa-youtube"></i></a>
+                        <a href="https://wa.me/+919955809933" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Copyrights -->
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <p>&copy; 2024 All Rights Reserved</p>
+                </div>
+            </div>
+        </div>
+      </footer>
+
+
+    <script src="{% static 'javascript/script.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+    <script>
+       document.addEventListener('DOMContentLoaded', function () {
+    const yearCircles = document.querySelectorAll('.year-circle');
+    const timelineContent = document.querySelector('.timeline-content');
+
+    const timelineData = {
+        "2017": {
+            title: "The Birth of Vilvah",
+            description: "In 2017, the seeds of Vilvah were sown in a home kitchen. The first product our founder created was goat milk soap to treat her daughter's eczema-prone skin. The same year we launched our flagship retail store in Coimbatore.",
+            image: "your-image-path-2017.jpg"
+        },
+        "2018": {
+            title: "Growth Year",
+            description: "In 2018, we expanded our product range and gained our first loyal customer base.",
+            image: "your-image-path-2018.jpg"
+        },
+        // Add more years and their respective data here
+    };
+
+    yearCircles.forEach(circle => {
+        circle.addEventListener('click', function () {
+            // Remove active class from all circles
+            yearCircles.forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+
+            // Fade out current content
+            timelineContent.classList.add('fade-out');
+
+            // Wait for the fade-out animation to finish
+            setTimeout(() => {
+                // Get the year data and update the content
+                const year = this.getAttribute('data-year');
+                const data = timelineData[year];
+
+                // Update the timeline content dynamically
+                timelineContent.innerHTML = `
+                    <div class="row">
+                        <div class="col-md-6">
+                            <img src="${data.image}" alt="${data.title}" class="img-fluid rounded">
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="text-success">It's story time!</h5>
+                            <h2 class="timeline-title">${data.title}</h2>
+                            <p class="timeline-description">${data.description}</p>
+                        </div>
+                    </div>
+                `;
+
+                // Remove fade-out class and add fade-in class
+                timelineContent.classList.remove('fade-out');
+                timelineContent.classList.add('fade-in');
+
+                // Ensure fade-in class is removed after the animation completes
+                setTimeout(() => {
+                    timelineContent.classList.remove('fade-in');
+                }, 500); // Match the fade-in duration (0.5s in CSS)
+            }, 500); // Match the fade-out duration (0.5s in CSS)
+        });
+    });
+});
+
+
+    </script>
+</body>
+</html>
